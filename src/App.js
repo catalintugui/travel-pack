@@ -4,13 +4,9 @@ function Logo() {
   return <h1>Travel pack 🧳</h1>;
 }
 
-function Form({ items, setItems }) {
+function Form({ onAdditems }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
-
-  function handleAddItem(item) {
-    setItems((items) => [...items, item]);
-  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -18,7 +14,7 @@ function Form({ items, setItems }) {
     if (!description) return;
 
     const newItem = { description, quantity, packed: false, id: Date.now() };
-    handleAddItem(newItem);
+    onAdditems(newItem);
     setDescription("");
     setQuantity(1);
   }
@@ -84,10 +80,14 @@ function Stats() {
 function App() {
   const [items, setItems] = useState([]);
 
+  function handleAddItem(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form items={items} setItems={setItems} />
+      <Form onAdditems={handleAddItem} />
       <PackingList items={items} />
       <Stats />
     </div>
