@@ -89,7 +89,7 @@ function Stats({ items }) {
   return (
     <footer className="stats">
       You have {items.length} items on your list and you packed {packedItems}(
-      {percentageItems}%)
+      {items.length ? percentageItems : 0}%)
     </footer>
   );
 }
