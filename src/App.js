@@ -23,7 +23,7 @@ function Form({ onAdditems }) {
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
-      <h3>something will be here</h3>
+      <h3>Add your item here:</h3>
 
       <select
         value={quantity}
@@ -80,14 +80,24 @@ function Item({ item, onDeleteItem, onToggleItems }) {
 }
 
 function Stats({ items }) {
+  if (!items.length) {
+    return <p className="stats">To start add some items to your list</p>;
+  }
   const itemsLength = items.length;
   const packedItems = items.filter((item) => item.packed === true).length;
-  const percentageItems = ((packedItems / itemsLength) * 100).toFixed(0);
+  const percentageItems = Math.round((packedItems / itemsLength) * 100);
 
   return (
     <footer className="stats">
-      You have {items.length} items on your list and you packed {packedItems}(
-      {items.length ? percentageItems : 0}%)
+      <em>
+        {percentageItems === 100
+          ? "Everything is ready and packed up 🚀"
+          : `You have ${
+              items.length
+            } items on your list and you packed ${packedItems} (${
+              items.length ? percentageItems : 0
+            }%)`}
+      </em>
     </footer>
   );
 }
