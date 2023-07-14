@@ -80,11 +80,9 @@ function Item({ item, onDeleteItem, onToggleItems }) {
 }
 
 function Stats({ items }) {
+  const itemsLength = items.length;
   const packedItems = items.filter((item) => item.packed === true).length;
-  const percentageItems = (
-    (items.filter((item) => item.packed === true).length / items.length) *
-    100
-  ).toFixed(0);
+  const percentageItems = ((packedItems / itemsLength) * 100).toFixed(0);
 
   return (
     <footer className="stats">
