@@ -1,127 +1,8 @@
 import { useState } from "react";
-
-function Logo() {
-  return <h1>Travel pack 🧳</h1>;
-}
-
-function Form({ onAdditems }) {
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState(1);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    if (!description) return;
-
-    const newItem = { description, quantity, packed: false, id: Date.now() };
-    onAdditems(newItem);
-    setDescription("");
-    setQuantity(1);
-  }
-
-  // e.target.value always returns a string
-
-  return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      <h3>Add your item here:</h3>
-
-      <select
-        value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value))}
-      >
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((item) => (
-          <option value={item} key={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        placeholder="Add item..."
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button>Add</button>
-    </form>
-  );
-}
-
-function PackingList({ items, onDeleteItem, onToggleItems }) {
-  const [sortBy, setSortBy] = useState("input");
-
-  let sortedItems;
-
-  if (sortBy === "input") sortedItems = items;
-  if (sortBy === "description")
-    sortedItems = items
-      .slice()
-      .sort((a, b) => a.description.localeCompare(b.description));
-  if (sortBy === "packed")
-    sortedItems = items
-      .slice()
-      .sort((a, b) => Number(a.packed) - Number(b.packed));
-
-  return (
-    <div className="list">
-      <ul>
-        {sortedItems.map((item) => (
-          <Item
-            item={item}
-            key={item.id}
-            onDeleteItem={onDeleteItem}
-            onToggleItems={onToggleItems}
-          />
-        ))}
-      </ul>
-      <div className="actions">
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-          <option value="input">Sort by input order</option>
-          <option value="description">Sort by description</option>
-          <option value="packed">Sort by packed status</option>
-        </select>
-      </div>
-    </div>
-  );
-}
-
-function Item({ item, onDeleteItem, onToggleItems }) {
-  return (
-    <li>
-      <input
-        type="checkbox"
-        value={item.packed}
-        onChange={() => onToggleItems(item.id)}
-      />
-      <span style={item.packed ? { textDecoration: "line-through" } : {}}>
-        {item.quantity} {item.description}
-        <button onClick={() => onDeleteItem(item.id)}>❌</button>
-      </span>
-    </li>
-  );
-}
-
-function Stats({ items }) {
-  if (!items.length) {
-    return <p className="stats">To start add some items to your list</p>;
-  }
-  const itemsLength = items.length;
-  const packedItems = items.filter((item) => item.packed === true).length;
-  const percentageItems = Math.round((packedItems / itemsLength) * 100);
-
-  return (
-    <footer className="stats">
-      <em>
-        {percentageItems === 100
-          ? "Everything is ready and packed up 🚀"
-          : `You have ${
-              items.length
-            } items on your list and you packed ${packedItems} (${
-              items.length ? percentageItems : 0
-            }%)`}
-      </em>
-    </footer>
-  );
-}
+import Logo from "./Logo";
+import Form from "./Form";
+import PackingList from "./PackingList";
+import Stats from "./Stats";
 
 function App() {
   const [items, setItems] = useState([]);
@@ -142,6 +23,13 @@ function App() {
     );
   }
 
+  function handleClearList() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your list?"
+    );
+    if (confirmed) setItems([]);
+  }
+
   return (
     <div className="app">
       <Logo />
@@ -150,6 +38,7 @@ function App() {
         items={items}
         onDeleteItem={handleDeleteItem}
         onToggleItems={handleToggleItem}
+        onClearList={handleClearList}
       />
       <Stats items={items} />
     </div>
